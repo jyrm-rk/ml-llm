@@ -4,6 +4,6 @@ from transformers import pipeline
 
 classifiers = pipeline( task="sentiment-analysis")
 
-res = classifiers("I love AI programming!!")
+res = classifiers( "is it confusing")
 
 print(res)
