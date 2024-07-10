@@ -1,0 +1,71 @@
+created_by: Jayaram
+domain: mulesoftToWebMethods
+seed_examples:
+- question: which operation should i use for sending email?
+  answer: Drag and drop the Email Connector Send operation from mule palette
+- question: which operation should i use for sending email?
+  answer: Drag and drop the Email Connector Send operation from mule palette
+- question: What are steps involved in sending email in mulesoft code? 
+  answer: Step 1 - Drag and drop the Email Connector Send operation from mule palette
+          Step 2 - Configure the smtp connection
+          Step 3 - Configure  fromAddress,toAddress,subject and content as payload
+- question: How to test this project?
+  answer: Deploy project and trigger the request from soapui
+- question: Explain below mulesoft code 
+          '          <?xml version="1.0" encoding="UTF-8"?>
+          <mule xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+            xmlns="http://www.mulesoft.org/schema/mule/core"
+            xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+          http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+          http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+            <http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="7e130d85-8e7f-43cf-aa0b-3c3cb0419f1c" >
+              <http:listener-connection host="0.0.0.0" port="8081" />
+            </http:listener-config>
+            <email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="a6ae9968-5a6c-4104-aec7-3f493fe74067" >
+              <email:smtp-connection host="mail.test.com" user="test@mulesy.com" password="wrewrewrwer" port="3435"/>
+            </email:smtp-config>
+            <flow name="emaildemoFlow" doc:id="21b1c24d-67f9-4660-b8c7-37ce94026702" >
+              <http:listener doc:name="Listener" doc:id="cf658301-ec3f-4591-b2e4-e5ccc4f8f04a" config-ref="HTTP_Listener_config" path="/sendEmail"/>
+              <email:send doc:name="Send" doc:id="4e3e0f63-5d50-4f68-bb64-aeb3372f362a" config-ref="Email_SMTP" fromAddress="emaildemo@mulesy.com" subject="Test Email">
+                <email:to-addresses >
+                  <email:to-address value="muleisy@gmail.com" />
+                </email:to-addresses>
+                <email:body >
+                  <email:content ><![CDATA[#[payload.SampleMessage]]]></email:content>
+                </email:body>
+              </email:send>
+            </flow>
+          </mule>
+
+        '
+  answer: Step 1 - http:listener-config
+          Step 2 - email:smtp-config
+- question: Generate mulesoft code for sending email
+  answer: '
+          <?xml version="1.0" encoding="UTF-8"?>
+          <mule xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+            xmlns="http://www.mulesoft.org/schema/mule/core"
+            xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+          http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+          http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+            <http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="7e130d85-8e7f-43cf-aa0b-3c3cb0419f1c" >
+              <http:listener-connection host="0.0.0.0" port="8081" />
+            </http:listener-config>
+            <email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="a6ae9968-5a6c-4104-aec7-3f493fe74067" >
+              <email:smtp-connection host="mail.test.com" user="test@mulesy.com" password="wrewrewrwer" port="3435"/>
+            </email:smtp-config>
+            <flow name="emaildemoFlow" doc:id="21b1c24d-67f9-4660-b8c7-37ce94026702" >
+              <http:listener doc:name="Listener" doc:id="cf658301-ec3f-4591-b2e4-e5ccc4f8f04a" config-ref="HTTP_Listener_config" path="/sendEmail"/>
+              <email:send doc:name="Send" doc:id="4e3e0f63-5d50-4f68-bb64-aeb3372f362a" config-ref="Email_SMTP" fromAddress="emaildemo@mulesy.com" subject="Test Email">
+                <email:to-addresses >
+                  <email:to-address value="muleisy@gmail.com" />
+                </email:to-addresses>
+                <email:body >
+                  <email:content ><![CDATA[#[payload.SampleMessage]]]></email:content>
+                </email:body>
+              </email:send>
+            </flow>
+          </mule>
+
+          '
+task_description: mulesoft converter

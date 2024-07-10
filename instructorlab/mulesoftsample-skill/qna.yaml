@@ -1,0 +1,392 @@
+created_by: Jayaram
+seed_examples:
+- context: '
+          <?xml version="1.0" encoding="UTF-8"?>
+          <mule xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+            xmlns="http://www.mulesoft.org/schema/mule/core"
+            xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+          http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+          http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+            <http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="7e130d85-8e7f-43cf-aa0b-3c3cb0419f1c" >
+              <http:listener-connection host="0.0.0.0" port="8081" />
+            </http:listener-config>
+            <email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="a6ae9968-5a6c-4104-aec7-3f493fe74067" >
+              <email:smtp-connection host="mail.test.com" user="test@mulesy.com" password="wrewrewrwer" port="3435"/>
+            </email:smtp-config>
+            <flow name="emaildemoFlow" doc:id="21b1c24d-67f9-4660-b8c7-37ce94026702" >
+              <http:listener doc:name="Listener" doc:id="cf658301-ec3f-4591-b2e4-e5ccc4f8f04a" config-ref="HTTP_Listener_config" path="/sendEmail"/>
+              <email:send doc:name="Send" doc:id="4e3e0f63-5d50-4f68-bb64-aeb3372f362a" config-ref="Email_SMTP" fromAddress="emaildemo@mulesy.com" subject="Test Email">
+                <email:to-addresses >
+                  <email:to-address value="muleisy@gmail.com" />
+                </email:to-addresses>
+                <email:body >
+                  <email:content ><![CDATA[#[payload.SampleMessage]]]></email:content>
+                </email:body>
+              </email:send>
+            </flow>
+          </mule>
+
+        '
+  question: Summarize the mulesoft code
+  answer: Flow Name - emaildemoFlow
+          Input - Nil
+          Output - Nil
+          Steps Involved - 
+            Step 1 - http:listener-config
+            Step 2 - email:smtp-config
+          Mappings involved - 
+            email:smtp-connection host = "mail.test.com"
+            email:smtp-connection user = "test@mulesy.com"
+            email:smtp-connection password = "wrewrewrwer" 
+            email:smtp-connection port = "3435"
+            email:to-address value = "muleisy@gmail.com"
+            email:body content = <![CDATA[#[payload.SampleMessage]]]>
+
+- context: '
+          <?xml version="1.0" encoding="UTF-8"?>
+          <mule xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+            xmlns="http://www.mulesoft.org/schema/mule/core"
+            xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+          http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+          http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+            <http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="7e130d85-8e7f-43cf-aa0b-3c3cb0419f1c" >
+              <http:listener-connection host="0.0.0.0" port="8081" />
+            </http:listener-config>
+            <email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="a6ae9968-5a6c-4104-aec7-3f493fe74067" >
+              <email:smtp-connection host="mail.test.com" user="test@mulesy.com" password="wrewrewrwer" port="3435"/>
+            </email:smtp-config>
+            <flow name="emaildemoFlow" doc:id="21b1c24d-67f9-4660-b8c7-37ce94026702" >
+              <http:listener doc:name="Listener" doc:id="cf658301-ec3f-4591-b2e4-e5ccc4f8f04a" config-ref="HTTP_Listener_config" path="/sendEmail"/>
+              <email:send doc:name="Send" doc:id="4e3e0f63-5d50-4f68-bb64-aeb3372f362a" config-ref="Email_SMTP" fromAddress="emaildemo@mulesy.com" subject="Test Email">
+                <email:to-addresses >
+                  <email:to-address value="muleisy@gmail.com" />
+                </email:to-addresses>
+                <email:body >
+                  <email:content ><![CDATA[#[payload.SampleMessage]]]></email:content>
+                </email:body>
+              </email:send>
+            </flow>
+          </mule>
+
+        '
+  question: What are different steps involved in this code"
+  answer: Steps Involved - 
+            Step 1 - http:listener-config
+            Step 2 - email:smtp-config
+
+- context: '
+          <?xml version="1.0" encoding="UTF-8"?>
+          <mule xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+            xmlns="http://www.mulesoft.org/schema/mule/core"
+            xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+          http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+          http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+            <http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="7e130d85-8e7f-43cf-aa0b-3c3cb0419f1c" >
+              <http:listener-connection host="0.0.0.0" port="8081" />
+            </http:listener-config>
+            <email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="a6ae9968-5a6c-4104-aec7-3f493fe74067" >
+              <email:smtp-connection host="mail.test.com" user="test@mulesy.com" password="wrewrewrwer" port="3435"/>
+            </email:smtp-config>
+            <flow name="emaildemoFlow" doc:id="21b1c24d-67f9-4660-b8c7-37ce94026702" >
+              <http:listener doc:name="Listener" doc:id="cf658301-ec3f-4591-b2e4-e5ccc4f8f04a" config-ref="HTTP_Listener_config" path="/sendEmail"/>
+              <email:send doc:name="Send" doc:id="4e3e0f63-5d50-4f68-bb64-aeb3372f362a" config-ref="Email_SMTP" fromAddress="emaildemo@mulesy.com" subject="Test Email">
+                <email:to-addresses >
+                  <email:to-address value="muleisy@gmail.com" />
+                </email:to-addresses>
+                <email:body >
+                  <email:content ><![CDATA[#[payload.SampleMessage]]]></email:content>
+                </email:body>
+              </email:send>
+            </flow>
+          </mule>
+
+        '
+  question: List down mapping details in the code.
+  answer: Mappings involved - 
+            email:smtp-connection host = "mail.test.com"
+            email:smtp-connection user = "test@mulesy.com"
+            email:smtp-connection password = "wrewrewrwer" 
+            email:smtp-connection port = "3435"
+            email:to-address value = "muleisy@gmail.com"
+            email:body content = <![CDATA[#[payload.SampleMessage]]]>
+
+- context: '
+            <?xml version="1.0" encoding="UTF-8"?>
+
+            <mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+              xmlns="http://www.mulesoft.org/schema/mule/core"
+              xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+            http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+            http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+              <email:imap-config name="Email_IMAP" doc:name="Email IMAP" doc:id="c552485a-bfc4-4707-9c51-bae18c9f90e1" >
+                <email:imap-connection host="mail.test.com" port="143" user="asdsd@mulesy.com" password="sadds"/>
+              </email:imap-config>
+              <flow name="reademailfrominboxFlow" doc:id="628a9fda-6e2c-46c6-a76e-70ddbade7f0f" >
+                <email:listener-imap doc:name="On New Email - IMAP" doc:id="a4be1d28-27e1-4ba1-a931-75b70eb77550" config-ref="Email_IMAP" deleteAfterRetrieve="true">
+                  <scheduling-strategy >
+                    <fixed-frequency frequency="1" timeUnit="MINUTES"/>
+                  </scheduling-strategy>
+                </email:listener-imap>
+                <ee:transform doc:name="Transform Message" doc:id="dfc6756c-9fab-4b1c-bcde-1bafac19f404" >
+                  <ee:message >
+                    <ee:set-payload ><![CDATA[%dw 2.0
+            output application/java
+            ---
+            {
+              "EmailBody":payload.body,
+              "EmailAttachment":payload.attachments[0]
+            }]]></ee:set-payload>
+                  </ee:message>
+                </ee:transform>
+                <logger level="INFO" doc:name="Logger" doc:id="3a6b2efe-dab6-40c6-925a-701352c1f610" message="#[payload]"/>
+              </flow>
+            </mule>
+
+        '
+  question: Summarize the mulesoft code
+  answer: Flow Name - reademailfrominboxFlow
+          Input - Nil
+          Output - output application/java
+                    ---
+                    {
+                      "EmailBody":payload.body,
+                      "EmailAttachment":payload.attachments[0]
+                    }
+          Steps Involved - 
+            Step 1 - email:imap-config
+            Step 2 - ee:transform
+            Step 3 - logger
+          Mappings involved - 
+            email:imap-connection host="mail.test.com" 
+            email:imap-connection port="143" 
+            email:imap-connection user="asdsd@mulesy.com" 
+            email:imap-connection password="sadds"
+            email:listener-imap doc:name="On New Email - IMAP" 
+            email:listener-imap doc:id="a4be1d28-27e1-4ba1-a931-75b70eb77550" 
+            email:listener-imap config-ref="Email_IMAP" 
+            email:listener-imap deleteAfterRetrieve="true"
+            scheduling-strategy:fixed-frequency frequency="1" 
+            scheduling-strategy:fixed-frequency timeUnit="MINUTES"
+
+- context: '
+            <?xml version="1.0" encoding="UTF-8"?>
+
+            <mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+              xmlns="http://www.mulesoft.org/schema/mule/core"
+              xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+            http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+            http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+              <email:imap-config name="Email_IMAP" doc:name="Email IMAP" doc:id="c552485a-bfc4-4707-9c51-bae18c9f90e1" >
+                <email:imap-connection host="mail.test.com" port="143" user="asdsd@mulesy.com" password="sadds"/>
+              </email:imap-config>
+              <flow name="reademailfrominboxFlow" doc:id="628a9fda-6e2c-46c6-a76e-70ddbade7f0f" >
+                <email:listener-imap doc:name="On New Email - IMAP" doc:id="a4be1d28-27e1-4ba1-a931-75b70eb77550" config-ref="Email_IMAP" deleteAfterRetrieve="true">
+                  <scheduling-strategy >
+                    <fixed-frequency frequency="1" timeUnit="MINUTES"/>
+                  </scheduling-strategy>
+                </email:listener-imap>
+                <ee:transform doc:name="Transform Message" doc:id="dfc6756c-9fab-4b1c-bcde-1bafac19f404" >
+                  <ee:message >
+                    <ee:set-payload ><![CDATA[%dw 2.0
+            output application/java
+            ---
+            {
+              "EmailBody":payload.body,
+              "EmailAttachment":payload.attachments[0]
+            }]]></ee:set-payload>
+                  </ee:message>
+                </ee:transform>
+                <logger level="INFO" doc:name="Logger" doc:id="3a6b2efe-dab6-40c6-925a-701352c1f610" message="#[payload]"/>
+              </flow>
+            </mule>
+
+        '
+  question: List input and output of this flow.
+  answer: Input - Nil
+          Output - output application/java
+                    ---
+                    {
+                      "EmailBody":payload.body,
+                      "EmailAttachment":payload.attachments[0]
+                    }
+
+- context: '
+            <?xml version="1.0" encoding="UTF-8"?>
+
+            <mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+              xmlns="http://www.mulesoft.org/schema/mule/core"
+              xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+            http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+            http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+              <email:imap-config name="Email_IMAP" doc:name="Email IMAP" doc:id="c552485a-bfc4-4707-9c51-bae18c9f90e1" >
+                <email:imap-connection host="mail.test.com" port="143" user="asdsd@mulesy.com" password="sadds"/>
+              </email:imap-config>
+              <flow name="reademailfrominboxFlow" doc:id="628a9fda-6e2c-46c6-a76e-70ddbade7f0f" >
+                <email:listener-imap doc:name="On New Email - IMAP" doc:id="a4be1d28-27e1-4ba1-a931-75b70eb77550" config-ref="Email_IMAP" deleteAfterRetrieve="true">
+                  <scheduling-strategy >
+                    <fixed-frequency frequency="1" timeUnit="MINUTES"/>
+                  </scheduling-strategy>
+                </email:listener-imap>
+                <ee:transform doc:name="Transform Message" doc:id="dfc6756c-9fab-4b1c-bcde-1bafac19f404" >
+                  <ee:message >
+                    <ee:set-payload ><![CDATA[%dw 2.0
+            output application/java
+            ---
+            {
+              "EmailBody":payload.body,
+              "EmailAttachment":payload.attachments[0]
+            }]]></ee:set-payload>
+                  </ee:message>
+                </ee:transform>
+                <logger level="INFO" doc:name="Logger" doc:id="3a6b2efe-dab6-40c6-925a-701352c1f610" message="#[payload]"/>
+              </flow>
+            </mule>
+
+        '
+  question: How many flows are present here? 
+  answer: 1 flow is present here. Flow Name - reademailfrominboxFlow
+
+- context: |
+            <?xml version="1.0" encoding="UTF-8"?>
+
+            <mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+              xmlns:http="http://www.mulesoft.org/schema/mule/http"
+              xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+            http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+            http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+            http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+              <http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="ec88abba-066d-4ae7-a442-472e04415577" >
+                <http:listener-connection host="0.0.0.0" port="8081" />
+              </http:listener-config>
+              <sftp:config name="SFTP_Config" doc:name="SFTP Config" doc:id="5b631e52-7f26-42af-bd2b-a902c5a914f7" >
+                <sftp:connection workingDir="/in" host="host_name" username="username" password="password" />
+              </sftp:config>
+              <flow name="sftp-servicesFlow" doc:id="c420ae19-46cf-4bdf-9d42-f067be1481f1" >
+                <http:listener doc:name="Listener" doc:id="73250bfb-9aee-47da-b09e-bd985be6ec34" config-ref="HTTP_Listener_config" path="write"/>
+                <logger level="INFO" doc:name="Logger" doc:id="aeba3eb0-2b4d-4542-8b79-3f3fbc45ce6a" message="Incoming Text #[payload]"/>
+                <set-variable value="mulesy.txt" doc:name="filename" doc:id="c00037d2-0381-47ff-a23e-1c062ea16467" variableName="filename"/>
+                <sftp:write doc:name="Write" doc:id="0f13b970-cbd4-4e5e-944b-6bb07c207a3b" config-ref="SFTP_Config" path="#[vars.filename]"/>
+                <ee:transform doc:name="Transform Message" doc:id="06893d89-0142-4d30-96bb-ebe134946852" >
+                  <ee:message >
+                    <ee:set-payload ><![CDATA[%dw 2.0
+            output application/json
+            ---
+            {
+              message: "file created successfully"
+            }]]></ee:set-payload>
+                  </ee:message>
+                </ee:transform>
+              </flow>
+              <flow name="sftp-services-poll-new-Flow" doc:id="894122f2-7e7e-49dd-af41-985b4554ba5b" >
+                <sftp:listener doc:name="On New or Updated File" doc:id="b4aaaa4e-37cd-44ed-bfac-f299215c0806" config-ref="SFTP_Config">
+                  <scheduling-strategy >
+                    <fixed-frequency />
+                  </scheduling-strategy>
+                </sftp:listener>
+                <logger level="INFO" doc:name="filename" doc:id="fd2228ed-d778-4be6-8b10-b5b91dab92d3" message="#['filename - ' ++ attributes.fileName]"/>
+                <logger level="INFO" doc:name="payload" doc:id="d3f19291-fac7-4648-a4d4-0aa7aeeb3d0a" message="file content - #[payload]"/>
+              </flow>
+              <flow name="sftp-services-read-Flow" doc:id="c4a9e843-246f-42de-bbf0-60d80b586f8a" >
+                <http:listener doc:name="Listener" doc:id="cd932466-a17f-473b-823a-99c9695687d1" config-ref="HTTP_Listener_config" path="read"/>
+                <logger level="INFO" doc:name="filename" doc:id="75f3794e-a9d3-4825-9336-d6efcc17b714" message="filename - #[attributes.queryParams.'filename']"/>
+                <sftp:read doc:name="Read" doc:id="e16d4cf2-4fae-474d-af3d-c9f5e6d6bc93" config-ref="SFTP_Config" path="#[attributes.queryParams.'filename']"/>
+              </flow>
+            </mule>
+            |
+  question: Summarize the mulesoft code
+  answer: There are 3 flows in this service.
+          Flow Name 1 - sftp-servicesFlow
+              Input - Nil
+              Output - output application/json
+                        ---
+                        {
+                          message:"file created successfully"
+                        }
+              Steps Involved - 
+                Step 1 - http:listener
+                Step 2 - ee:transform
+              Mappings involved - 
+                set-variable value="mulesy.txt" 
+                set-variable doc:name="filename" 
+                set-variable doc:id="c00037d2-0381-47ff-a23e-1c062ea16467" 
+                set-variable variableName="filename"
+                sftp:write doc:name="Write" 
+                sftp:write doc:id="0f13b970-cbd4-4e5e-944b-6bb07c207a3b" 
+                sftp:write config-ref="SFTP_Config" 
+                sftp:write path="#[vars.filename]"
+          Flow Name 2 - sftp-services-poll-new-Flow
+              Input - Nil
+              Output - Nil
+              Steps Involved - 
+                Step 1 - sftp:listener
+                Step 2 - scheduling-strategy
+              Mappings involved - 
+                sftp:listener doc:name="On New or Updated File" 
+                sftp:listener doc:id="b4aaaa4e-37cd-44ed-bfac-f299215c0806" 
+                sftp:listener config-ref="SFTP_Config"
+          Flow Name 3 - sftp-services-read-Flow
+              Input - Nil
+              Output - Nil
+              Steps Involved - 
+                Step 1 - http:listener
+                Step 2 - sftp:read
+              Mappings involved - 
+                sftp:read doc:name="Read" 
+                sftp:read doc:id="e16d4cf2-4fae-474d-af3d-c9f5e6d6bc93" 
+                sftp:read config-ref="SFTP_Config" 
+                sftp:read path="#[attributes.queryParams.'filename']"
+
+- context: |
+            <?xml version="1.0" encoding="UTF-8"?>
+
+            <mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+              xmlns:http="http://www.mulesoft.org/schema/mule/http"
+              xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+            http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+            http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+            http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+              <http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="ec88abba-066d-4ae7-a442-472e04415577" >
+                <http:listener-connection host="0.0.0.0" port="8081" />
+              </http:listener-config>
+              <sftp:config name="SFTP_Config" doc:name="SFTP Config" doc:id="5b631e52-7f26-42af-bd2b-a902c5a914f7" >
+                <sftp:connection workingDir="/in" host="host_name" username="username" password="password" />
+              </sftp:config>
+              <flow name="sftp-servicesFlow" doc:id="c420ae19-46cf-4bdf-9d42-f067be1481f1" >
+                <http:listener doc:name="Listener" doc:id="73250bfb-9aee-47da-b09e-bd985be6ec34" config-ref="HTTP_Listener_config" path="write"/>
+                <logger level="INFO" doc:name="Logger" doc:id="aeba3eb0-2b4d-4542-8b79-3f3fbc45ce6a" message="Incoming Text #[payload]"/>
+                <set-variable value="mulesy.txt" doc:name="filename" doc:id="c00037d2-0381-47ff-a23e-1c062ea16467" variableName="filename"/>
+                <sftp:write doc:name="Write" doc:id="0f13b970-cbd4-4e5e-944b-6bb07c207a3b" config-ref="SFTP_Config" path="#[vars.filename]"/>
+                <ee:transform doc:name="Transform Message" doc:id="06893d89-0142-4d30-96bb-ebe134946852" >
+                  <ee:message >
+                    <ee:set-payload ><![CDATA[%dw 2.0
+            output application/json
+            ---
+            {
+              message: "file created successfully"
+            }]]></ee:set-payload>
+                  </ee:message>
+                </ee:transform>
+              </flow>
+              <flow name="sftp-services-poll-new-Flow" doc:id="894122f2-7e7e-49dd-af41-985b4554ba5b" >
+                <sftp:listener doc:name="On New or Updated File" doc:id="b4aaaa4e-37cd-44ed-bfac-f299215c0806" config-ref="SFTP_Config">
+                  <scheduling-strategy >
+                    <fixed-frequency />
+                  </scheduling-strategy>
+                </sftp:listener>
+                <logger level="INFO" doc:name="filename" doc:id="fd2228ed-d778-4be6-8b10-b5b91dab92d3" message="#['filename - ' ++ attributes.fileName]"/>
+                <logger level="INFO" doc:name="payload" doc:id="d3f19291-fac7-4648-a4d4-0aa7aeeb3d0a" message="file content - #[payload]"/>
+              </flow>
+              <flow name="sftp-services-read-Flow" doc:id="c4a9e843-246f-42de-bbf0-60d80b586f8a" >
+                <http:listener doc:name="Listener" doc:id="cd932466-a17f-473b-823a-99c9695687d1" config-ref="HTTP_Listener_config" path="read"/>
+                <logger level="INFO" doc:name="filename" doc:id="75f3794e-a9d3-4825-9336-d6efcc17b714" message="filename - #[attributes.queryParams.'filename']"/>
+                <sftp:read doc:name="Read" doc:id="e16d4cf2-4fae-474d-af3d-c9f5e6d6bc93" config-ref="SFTP_Config" path="#[attributes.queryParams.'filename']"/>
+              </flow>
+            </mule>
+            |
+  question: How many flows are present in this mulesoft code?
+  answer: There are 3 flows in this mulesoft code.
+          Flow Name 1 - sftp-servicesFlow
+          Flow Name 2 - sftp-services-poll-new-Flow
+          Flow Name 3 - sftp-services-read-Flow
+
+task_description: mulesoft converter
