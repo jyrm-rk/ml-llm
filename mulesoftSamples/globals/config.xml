@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:kafka="http://www.mulesoft.org/schema/mule/kafka"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:cloudhub="http://www.mulesoft.org/schema/mule/cloudhub" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/kafka http://www.mulesoft.org/schema/mule/kafka/current/mule-kafka.xsd">
+	<http:listener-config name="HTTPS_Listener_Config_Private" doc:name="HTTP Listener config"
+		doc:id="bc494614-2f93-4c8e-b76d-92804931f50c" basePath="${api.basepath}"
+		doc:description="HTTPS Listener Config for PRIVATE (Internal) facing API Endpoints">
+		<http:listener-connection host="${https.host}" port="${https.private.port}" protocol="HTTPS"
+			tlsContext="TLS_Context" />
+	</http:listener-config>
+	<tls:context name="TLS_Context" doc:name="TLS Context" doc:id="d90d1f74-e36b-4ac2-8093-517574fe6a45"
+		doc:description="TLS Context For Key Store">
+		<tls:key-store type="jks" path="${keystore.path}" keyPassword="${secure::keystore.keypassword}"
+			password="${secure::keystore.password}" alias="${keystore.alias}" />
+	</tls:context>
+	<tls:context name="TLS_Context_TrustStore" doc:name="TLS Context" doc:id="850a97aa-3bfd-4196-894c-0e7545d78021" doc:description="TLS Context For Trust Store" >
+		<tls:trust-store path="${truststore.path}" type="jks" password="${secure::keystore.password}"/>
+	</tls:context>
+	<configuration-properties doc:name="Configuration properties" doc:id="2156951d-b336-40b8-9f9b-ce017f893efb"
+		file="config/mdt-corporate-consent-sapi-common-config.yaml" doc:description="Properties Common to ALL Environments" />
+	<configuration-properties doc:name="Configuration properties" doc:id="05108146-baf7-4ced-9ee8-73ee337de45b"
+		file="config/mdt-corporate-consent-sapi-config-${mule.env}.yaml" doc:description="Environment Specific Unsecured Properties" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config"
+		doc:id="d6b73648-08a6-420a-9730-d1fc5e243eb5" key="${mule.key}" file="config\secure\mdt-corporate-consent-sapi-config-secured-${mule.env}.yaml"
+		doc:description="Environment Specific Secured Properties" />
+	<json-logger:config name="JSON_Logger_Config" doc:name="JSON Logger Config"
+		doc:id="957f54e7-a019-4f0d-a878-e0459ea2a41c" disabledFields="${json.logger.application.disabledFields}"
+		doc:description="JSON Logger Configuration" environment="${mule.env}" contentFieldsDataMasking="${json.logger.application.contentFieldsDataMasking}"/>
+	<global-property doc:name="Global Property" doc:id="c58439c6-2c70-4b5a-9874-c00489a8151a" name="mule.env" value="dev"
+		doc:description="mule env for config/property file lookup" />
+	<global-property doc:name="Global Property" doc:id="6b46fa7d-c16f-42fa-ad95-f352576aef3d" name="mule.key"
+		value="10172001645218765889512586447193" doc:description="mule key for decryting the secure properties" />
+	<global-property doc:name="Global Property" doc:id="500cff06-dc5d-44b1-abe4-c519632c06fb" name="mule.deployEnv" value="-local" doc:description="Mule deployment key for the CI/CD process to deploy to Cloud Hub"/>
+	<api-gateway:autodiscovery apiId="${api.id}" doc:name="API Autodiscovery"
+		doc:id="06868852-ecfe-413d-88fb-bae4047ada77" flowRef="mdt-corporate-consent-sapi-main:privateFlow"
+		doc:description="API Autodiscovery for mapping the mule application with the API Instance on the API Manager" ignoreBasePath="true"/>
+     <http:request-config name="HTTP_Request_Configuration_Elk" doc:name="HTTP Request configuration" doc:id="bc98e1c1-bff4-4d0a-882d-8cbc89be6e86" doc:description="HTTPS Request Configuration For Elk" basePath="${elktracesapi.basepath}" responseTimeout="${elktracesapi.responsetime}">
+		<http:request-connection protocol="HTTPS" host="${elktracesapi.host}" tlsContext="TLS_Context">
+		</http:request-connection>
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration_one_trust" doc:name="HTTP Request configuration" doc:id="1b2d6931-d77d-4187-9b79-2d5d38f73967" doc:description="onetrust request configuration">
+		<http:request-connection protocol="HTTPS" host="${onetrust.host}">
+			<tls:context >
+				<tls:trust-store path="${token.trustStorePath}" password="${secure::onetrust.keystorepass}" type="jks" insecure="true"/>
+			</tls:context>
+
+		</http:request-connection>
+	</http:request-config>
+	
+	<kafka:producer-config name="Apache_Kafka_Producer_configuration" doc:name="Apache Kafka Producer configuration" doc:id="56a72fcd-2304-4e7c-9a8c-56b5911105c4" >
+		<kafka:producer-sasl-plain-connection username="${secure::apache.username}" password="${secure::apache.password}">
+			<tls:context >
+				<tls:trust-store path="${kafkatruststore.path}" password="${secure::truststorekafka.password}" type="jks" />
+				<tls:key-store type="jks" path="${kafkakeystore.path}" password="${secure::apache.keystorepass}" keyPassword="${secure::apache.keystorepass}"/>
+			</tls:context>
+			<kafka:bootstrap-servers >
+				<kafka:bootstrap-server value="${apache.server}" />
+			</kafka:bootstrap-servers>
+		</kafka:producer-sasl-plain-connection>
+	</kafka:producer-config>
+	
+	<http:request-config name="HTTP_Request_configuration_token" doc:name="HTTP Request configuration" doc:id="304890a6-42a0-4b71-8f67-01af39ce8427" doc:description="onetrust request configuration for token">
+		<http:request-connection protocol="HTTPS" host="${token.host}" >
+			<tls:context >
+				<tls:trust-store path="${token.trustStorePath}" password="${secure::onetrust.keystorepass}" type="jks" insecure="true"/>
+			</tls:context>
+		</http:request-connection>
+	</http:request-config>
+	
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="ffa235a2-705e-44d1-b05f-33941e64ab2a" maxEntries="1000" entryTtl="60" expirationInterval="60" doc:description="store access token" entryTtlUnit="MINUTES"/>
+
+</mule>

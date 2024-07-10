@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<flow name="getTokenDetails-flow" doc:id="c0eec839-cad3-4db5-9876-6a655a26050a">
+		<json-logger:logger doc:name="Start of Get Access Token Flow" doc:id="02d6b3eb-dffa-46f4-b523-1d3cd837da25" config-ref="JSON_Logger_Config" message="Start of Get Access Token Flow"/>
+		<os:retrieve doc:name="Retrieve Access Token" doc:id="f319f810-ee78-4ff8-8b83-7cd0c0ff7eba" key="oauthToken" objectStore="Object_store">
+			<os:default-value ><![CDATA[#[""]]]></os:default-value>
+		</os:retrieve>
+		<choice doc:name="Check if Input Payload is Empty" doc:id="b27a89a8-c8b5-4b39-9cc5-88a288b64f42" >
+			<when expression="#[isEmpty(payload)]">
+				<ee:transform doc:name="Token Input Payload" doc:id="e85c843f-aca6-47ca-ab17-fc3a6f34bf1a">
+					<ee:message>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable resource="dwl/token/set-var-tokenInput.dwl" variableName="tokenInput" />
+					</ee:variables>
+				</ee:transform>
+				<http:request method="POST" doc:name="Request Acces Token" doc:id="423da021-bd3a-4228-9770-6e01ca1642b7" config-ref="HTTP_Request_configuration_token" path="${token.path}">
+					<http:query-params ><![CDATA[#[vars.tokenInput]]]></http:query-params>
+		</http:request>
+				<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Access Token">
+            <ee:message>
+            </ee:message>
+					<ee:variables>
+						<ee:set-variable resource="dwl/token/set-var-accessToken.dwl" variableName="accessToken" />
+					</ee:variables>
+        
+</ee:transform>
+				<os:store doc:name="Store Access Token" doc:id="de272b9c-a05c-49be-bcae-c58793272c88" key="oauthToken" objectStore="Object_store">
+					<os:value ><![CDATA[#[vars.accessToken]]]></os:value>
+				</os:store>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Access Token" doc:id="ddc2bd35-203a-4b09-9755-e7c20f72d096" >
+					<ee:message >
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable resource="dwl/token/set-var-cached-accessToken.dwl" variableName="accessToken" />
+					</ee:variables>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<json-logger:logger doc:name="End of Get Access Token Flow" doc:id="f9dc192c-386a-4015-ad23-9d26470d4a5d" config-ref="JSON_Logger_Config" message="End of Get Access Token Flow"/>
+    </flow>
+</mule>

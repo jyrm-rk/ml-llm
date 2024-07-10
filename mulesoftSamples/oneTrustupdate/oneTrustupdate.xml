@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<flow name="put:\consents\oneTrust\update:mdt-corporate-consent-sapi-config" doc:id="66b77a19-bdf9-4ebb-b4d0-c492ba94054b" >
+		<json-logger:logger doc:name="Start Logger" doc:id="c14b9835-1ede-4664-a821-15812aa6f9b0" config-ref="JSON_Logger_Config" message="Start of Update OneTrust"/>
+		<ee:transform doc:name="Transformation for oneTrust" doc:id="ea164b1e-9df7-4f40-821b-dc69bc70bfef" >
+			<ee:message >
+				<ee:set-payload resource="dwl/consents/set-payload-oneTrustUpdatePayload.dwl" />
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="Invoke Kafka for OneTrust" doc:id="ffdfa742-5074-452d-987c-140f94293f55" name="sharedKafkaSubFlow" />
+		<json-logger:logger doc:name="End logger" doc:id="6466e1c0-603d-4b3b-9fb8-eeed7a618a06" config-ref="JSON_Logger_Config" message="End of Update OneTrust" tracePoint="END"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="87f1c394-66df-4357-9663-81fce8dc36f3" >
+				<ee:transform doc:name="Error Description" doc:id="6264fcb0-a38d-4c2d-816a-2bfb3fa6b15c" >
+					<ee:message >
+						<ee:set-payload resource="dwl/globals/set-payload-errorPayload.dwl" />
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+</flow>
+</mule>

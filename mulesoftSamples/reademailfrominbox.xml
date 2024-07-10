@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<email:imap-config name="Email_IMAP" doc:name="Email IMAP" doc:id="c552485a-bfc4-4707-9c51-bae18c9f90e1" >
+		<email:imap-connection host="mail.test.com" port="143" user="asdsd@mulesy.com" password="sadds"/>
+	</email:imap-config>
+	<flow name="reademailfrominboxFlow" doc:id="628a9fda-6e2c-46c6-a76e-70ddbade7f0f" >
+		<email:listener-imap doc:name="On New Email - IMAP" doc:id="a4be1d28-27e1-4ba1-a931-75b70eb77550" config-ref="Email_IMAP" deleteAfterRetrieve="true">
+			<scheduling-strategy >
+				<fixed-frequency frequency="1" timeUnit="MINUTES"/>
+			</scheduling-strategy>
+		</email:listener-imap>
+		<ee:transform doc:name="Transform Message" doc:id="dfc6756c-9fab-4b1c-bcde-1bafac19f404" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	"EmailBody":payload.body,
+	"EmailAttachment":payload.attachments[0]
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="3a6b2efe-dab6-40c6-925a-701352c1f610" message="#[payload]"/>
+	</flow>
+</mule>

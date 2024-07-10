@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<sub-flow name="elkTraceSub_Flow" doc:id="daac6fe2-2e11-4424-9fdb-6e5e6adb046a">
+		<async doc:name="Async" doc:id="1b74a65f-c0c9-47e9-b1a3-71f94a3f38ba" >
+			<ee:transform doc:name="Watcher API Payload" doc:id="35a806d6-99fc-4add-8462-8781ee85e963" >
+				<ee:message >
+					<ee:set-payload resource="dwl/elk/set-payload-elkPayload.dwl" />
+				</ee:message>
+			</ee:transform>
+			<json-logger:logger doc:name="Start Watcher API Call" doc:id="dc2ae7f9-861b-4db2-ae1f-89aea4677132" config-ref="JSON_Logger_Config" message="Start Watcher API Call"/>
+			<http:request method="POST" doc:name="Invoke Trace API" doc:id="1bfd03ce-2e4e-4b9b-9a35-a70f9adcc909" config-ref="HTTP_Request_Configuration_Elk" path="${elktracesapi.path}" outputMimeType="application/json" responseTimeout="${elktracesapi.responsetime}">
+				<http:headers ><![CDATA[#[output application/java
+   ---
+  {
+              "client_id" : p('secure::elktracesapi.client.id'),
+              "client_secret" : p('secure::elktracesapi.client.secret'),
+              "x-caller-name" : vars.varCallerName,
+              "x-correlation-id" : vars.correlationId,
+              "x-user-name" : vars.varUserName
+  }]]]></http:headers>
+			
+</http:request>
+			<json-logger:logger doc:name="End of Watcher API Call" doc:id="ebbdcd47-3668-4232-97a7-98dbb5a2bf7c" config-ref="JSON_Logger_Config" message="End of Watcher API Call"/>
+		
+</async>
+	</sub-flow>
+</mule>

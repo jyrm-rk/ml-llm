@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="globals-common:setHeaderVariablesSubFlow" doc:id="929ed1ae-4db0-4036-981b-7fd6745489f7">
+		<ee:transform doc:name="Set Header Variables" doc:id="1f37697b-d975-4c43-b55a-e49ae981b732">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable resource="dwl/globals/common-set-var-inputPayload.dwl" variableName="inputPayload" />
+				<ee:set-variable resource="dwl/globals/common-set-var-varMethod.dwl" variableName="varMethod" />
+				<ee:set-variable resource="dwl/globals/common-set-var-varUserName.dwl" variableName="varUserName" />
+				<ee:set-variable resource="dwl/globals/common-set-var-apiPath.dwl" variableName="apiPath" />
+				<ee:set-variable resource="dwl/globals/common-set-var-varRequestPath.dwl" variableName="varRequestPath" />
+				<ee:set-variable resource="dwl/globals/common-set-var-apiStartTime.dwl" variableName="apiStartTime" />
+				<ee:set-variable resource="dwl/globals/common-set-var-varCallerName.dwl" variableName="varCallerName" />
+				<ee:set-variable resource="dwl/globals/common-set-var-transactionId.dwl" variableName="transactionId" />
+				<ee:set-variable resource="dwl/globals/common-set-var-correlationId.dwl" variableName="correlationId" />
+			
+</ee:variables>
+		</ee:transform>
+	</sub-flow>
+</mule>

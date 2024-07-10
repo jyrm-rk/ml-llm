@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:cloudhub="http://www.mulesoft.org/schema/mule/cloudhub" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:error-handler-plugin="http://www.mulesoft.org/schema/mule/error-handler-plugin"
+	xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/error-handler-plugin http://www.mulesoft.org/schema/mule/error-handler-plugin/current/mule-error-handler-plugin.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/cloudhub http://www.mulesoft.org/schema/mule/cloudhub/current/mule-cloudhub.xsd">
+	<sub-flow name="globals-error:softErrorHandlerSubFlow" doc:id="ff70d679-4159-4e26-bb8c-f3f71da666f9">
+		<json-logger:logger doc:name="Log Exception" doc:id="c967bb8d-e97c-48b7-b40c-5fb8aa2a8687"
+			config-ref="JSON_Logger_Config" priority="ERROR" tracePoint="EXCEPTION" message="An Error has occured"
+			correlationId="#[vars.correlationId default correlationId]" />
+		<ee:transform doc:name="Set errorPayload" doc:id="bf8a9afd-e12f-4efd-89c6-3c0e68d8824d">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable resource="dwl/globals/error-set-var-errorPayload.dwl" variableName="errorPayload" />
+			</ee:variables>
+		</ee:transform>
+		<error-handler-plugin:on-error doc:name="Interpret Error" doc:id="11a17c05-a7a1-42f4-8315-696eac713d9d"
+			correlationId="#[vars.correlationId default correlationId]"
+			badRequestError='#["There was an issue with your request message. Error is: " ++ vars.errorPayload default ""]'
+			unauthorizedError='#["You have issues accessing the system " ++ vars.errorPayload default ""]'
+			notFoundError='#["The API has not been implemented " ++ vars.errorPayload default ""]'
+			notAcceptableError='#["One of the request or parameters is unacceptable " ++ vars.errorPayload default ""]'
+			timeoutError='#["You request to the server has been timed-out " ++ vars.errorPayload default ""]'
+			unsupportedMediaTypeError='#["Media Type not supported " ++ vars.errorPayload default ""]'
+			tooManyRequestsError='#["You have made too many requests to the server " ++ vars.errorPayload default ""]'
+			serverError='#["There is a server issue " ++ vars.errorPayload default ""]'
+			methodNotAllowedError='#["The method has not been implemented " ++ vars.errorPayload default ""]'
+			connectivityError='#["You have issues accessing the system " ++ vars.errorPayload default ""]'/>
+		<set-payload value="#[%dw 2.0
+&#10;output application/json
+&#10;fun maskInternalUrl(aString) = aString default &quot;&quot;
+&#10;    replace (&quot;webapi-nonprod-int.medtronic.com&quot;) with(&quot;*******&quot;) 
+&#10;    replace (&quot;webapi-int.medtronic.com&quot;) with(&quot;*******&quot;) 
+&#10;    replace (&quot;webapi-nonprod-int-eu.medtronic.com&quot;) with(&quot;*******&quot;) 
+&#10;    replace (&quot;webapi-int-eu.medtronic.com&quot;) with(&quot;*******&quot;)
+&#10;    replace (&quot;webapi-nonprod-int&quot;) with(&quot;*******&quot;)
+&#10;    replace (&quot;webapi-int&quot;) with(&quot;*******&quot;)
+&#10;    replace (&quot;medtronic.com&quot;) with(&quot;*******&quot;)
+&#10;var includeStack = if ((p('mule.env') == &quot;local&quot;) or (p('mule.env') == &quot;dev&quot;) or (p('mule.env') == &quot;tst&quot;)) (true) else (false)
+&#10;var currentErrorDetails = payload.errorDetails map (err, errIndex) -&gt; {
+&#10;    &quot;code&quot;: err.code as Number,
+&#10;    &quot;message&quot;: maskInternalUrl(if (isEmpty(payload.apiName)) (err.message) else (payload.apiName ++ &quot; - &quot; ++ err.message)),
+&#10;    &quot;additionalInfo&quot;: maskInternalUrl(err.additionalInfo)
+&#10;}
+&#10;var previousErrorDetails = error.errorMessage.payload.errorDetails map (err, errIndex) -&gt; {
+&#10;    &quot;code&quot;: err.code as Number,
+&#10;    &quot;message&quot;: maskInternalUrl(if (isEmpty(error.errorMessage.payload.apiName) or (err.message contains(error.errorMessage.payload.apiName))) (err.message) else (error.errorMessage.payload.apiName ++ &quot; - &quot; ++ err.message)),
+&#10;    &quot;additionalInfo&quot;: maskInternalUrl(err.additionalInfo)
+&#10;}
+&#10;---
+&#10;{
+&#10;  &quot;success&quot;: payload.success,
+&#10;  &quot;apiName&quot;: payload.apiName,
+&#10;  &quot;version&quot;: payload.version,
+&#10;  &quot;correlationId&quot;: payload.correlationId,
+&#10;  &quot;timestamp&quot;: payload.timestamp,
+&#10;  &quot;errorDetails&quot;: if (includeStack) (previousErrorDetails default [] ++ currentErrorDetails default []) else (currentErrorDetails)
+&#10;}]" doc:name="Set Error Response Payload" doc:id="9b723514-d7bb-4042-91c8-6756dd70e84e" />
+		<json-logger:logger doc:name="API Kit Error response" doc:id="e37efe96-f7bf-472d-b052-a65dda39550e"
+			message="Error processed by the Error Handler Plugin" config-ref="JSON_Logger_Config"
+			correlationId="#[vars.correlationId default correlationId]" priority="ERROR" tracePoint="EXCEPTION" />
+	</sub-flow>
+	<error-handler name="ApiKit_Error_Handler" doc:id="d39eae11-270e-4b5c-98b4-54437742ef5a">
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate"
+			doc:id="23733a8f-3656-4bb5-87ed-a85b3ab12e6a">
+			<flow-ref doc:name="softErrorHandler" doc:id="6fc13b05-ce1f-4063-929d-fef965e3f0e1" name="globals-error:softErrorHandlerSubFlow" />
+			<set-variable value="#[attributes.httpStatus]" doc:name="httpStatus" doc:id="4050923d-49ce-48d8-a7b6-12edf97c66b3"
+				variableName="httpStatus" />
+			<flow-ref doc:name="Call Elk Flow" doc:id="395fd50b-b4cc-4769-9321-abfd6d4ad56b" name="elkTraceSub_Flow"/>
+		
+</on-error-propagate>
+	</error-handler>
+</mule>

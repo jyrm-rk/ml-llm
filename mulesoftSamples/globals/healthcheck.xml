@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<sub-flow name="globals-healthcheck:healthCheckSubFlow" doc:id="b8307969-b7e2-47e4-9953-cb7ee1f0f0c4">
+		<json-logger:logger doc:name="Log Start" doc:id="9535aa33-6412-4839-82f5-1aed22c90e9a" config-ref="JSON_Logger_Config"
+			message="Start" correlationId="#[vars.correlationId default correlationId]" />
+		<choice doc:name="mode?" doc:id="bcfcda38-5e58-4747-b52d-7b3ec0186df8">
+			<when expression='#[attributes.queryParams.mode == "verbose"]'>
+				<ee:transform doc:name="set verbose response payload" doc:id="5f899d85-fd1e-4344-8ef1-cc207de93c45">
+					<ee:message>
+						<ee:set-payload resource="dwl/globals/healthcheck-verbose-response.dwl" />
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise>
+				<ee:transform doc:name="set basic response payload" doc:id="f8bb5160-82ee-42b9-ad3f-f8b315fe68d3">
+					<ee:message>
+						<ee:set-payload resource="dwl/globals/healthcheck-basic-response.dwl" />
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<json-logger:logger doc:name="Log End" doc:id="e25af0a9-6084-432c-966b-ab4d68d38af0" config-ref="JSON_Logger_Config"
+			tracePoint="END" message="End" correlationId="#[vars.correlationId default correlationId]" />
+	</sub-flow>
+</mule>

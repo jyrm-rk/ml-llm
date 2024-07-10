@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:kafka="http://www.mulesoft.org/schema/mule/kafka" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/kafka http://www.mulesoft.org/schema/mule/kafka/current/mule-kafka.xsd">
+	<sub-flow name="sharedKafkaSubFlow" doc:id="89fff033-da95-483b-92c2-3661ff303dee"> 
+		<try doc:name="Try" doc:id="3856e1c8-a894-4fcc-93c5-b08d8eac87da">
+					<json-logger:logger doc:name="Log Before Kafka Call" doc:id="fb62ce94-8c12-4e20-aa21-db9e1d93fc16" config-ref="JSON_Logger_Config" message="Log Before Kafka Call"/>
+
+			<kafka:publish doc:name="kafkaCall-Publish" doc:id="8b1af5da-f6a6-4e67-a957-e643f605d060" key='#[vars.correlationId]' topic="#[p('apache.onetrustrequest.topic')]" config-ref="Apache_Kafka_Producer_configuration">
+			<kafka:headers ><![CDATA[#[output application/json
+---
+{
+"transmissionId":vars.correlationId
+}]]]></kafka:headers>
+			</kafka:publish>
+			<json-logger:logger doc:name="Log After Kafka Call" doc:id="b76a5e09-2b54-4444-b1f2-6c87aa374d55" config-ref="JSON_Logger_Config" message="Log After Kafka Call" tracePoint="END" />
+					<ee:transform doc:name="Final Response" doc:id="308a1880-d50d-47d8-b7e4-33fef05a9300" >
+				<ee:message >
+					<ee:set-payload resource="dwl/set-payload-kafkaResponsePayload.dwl" />
+				</ee:message>
+			</ee:transform>
+			<error-handler>
+						<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="7636a1a2-b5f5-4a87-8065-53986378ea89">
+					<ee:transform doc:name="Error Description" doc:id="3fe0d5c6-a8b1-440e-bd27-f30e8f7c507a" >
+						<ee:message >
+							<ee:set-payload resource="dwl/set-payload-errorDescriptionPayload.dwl" />
+						</ee:message>
+					</ee:transform>
+						</on-error-propagate>
+					</error-handler>
+				</try>
+		
+	</sub-flow>
+</mule>

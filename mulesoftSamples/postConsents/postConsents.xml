@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:kafka="http://www.mulesoft.org/schema/mule/kafka"
+	xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/kafka http://www.mulesoft.org/schema/mule/kafka/current/mule-kafka.xsd">
+    
+	<flow name="post:\consents:mdt-corporate-consent-sapi-config" doc:id="c23aaa8f-9ae1-4990-9da7-1ac91faae31c" >
+		<json-logger:logger doc:name="Start Of Consents Flow" doc:id="da5a75d7-0ee9-4c98-b068-e4631f84e8fd" config-ref="JSON_Logger_Config" message="Start Of Consents Flow" />
+<!-- [STUDIO:"Async"]		<async doc:name="Async" doc:id="e8c2f97a-2b90-4c61-9b1a-cd185b3e9a1d" >
+			<kafka:publish doc:name="Publish" doc:id="38314db3-5ccb-446a-9132-c586d49833b4" config-ref="Apache_Kafka_Producer_configuration" />
+		</async> [STUDIO] -->
+		<flow-ref doc:name="Call Token Flow" doc:id="d8c4bd7f-e396-4c75-bbce-e0c57af07e98" name="getTokenDetails-flow" />
+		<ee:transform doc:name="OneTrust Request Payload" doc:id="dadf00cc-c2cb-4c07-9d05-393f92de66bc">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+var phoneDetails = vars.inputPayload.phoneNumber //(vars.inputPayload.virtualAddresses filter $.virtualAddressType == "PHONE")[0].components
+var alternateIdList =  [] /*if (sizeOf(vars.inputPayload.alternateIdentifiers default []) == 0) (null) else (vars.inputPayload.alternateIdentifiers map (item, index) -> {
+    "source": item.source,
+    "sourceId": item.sourceId,
+    "code": item.code,
+    "value": if ((upper(item.code) == "CONSENT_RECORD_ID" )) "7010" ++ vars.inputPayload.sourceId else item.value,
+    "status": item.status,
+
+}) */
+---
+{
+	"identifier": vars.inputPayload.personId,
+	"requestInformation": p('onetrust.requestInformation') ,
+	"identifierType": "ENT_PersonID",
+	"purposes": vars.inputPayload.purposes,
+	"dsDataElements": {
+		"ENT_FirstName": vars.inputPayload.firstName,
+		"ENT_LastName": vars.inputPayload.lastName default "",
+		"ENT_MiddleName": vars.inputPayload.middleName default "",
+		"ENT_EmailAddress":vars.inputPayload.emailAddress default "",
+		"ENT_PhoneNumber": vars.inputPayload.phoneNumber default "",//(("+" ++ phoneDetails.countryCode) default "") ++ (phoneDetails.number default ""),
+		"ENT_PersonaType": "PERSON",
+		"ENT_CIAMDigitalID": (vars.inputPayload.alternateIdentifiers filter($.alternateIdentifierType == 'OKTA_US_ID'))[0].alternateIdentifierValue,
+		"ENT_HiggsBosonCIAMID": (vars.inputPayload.alternateIdentifiers filter($.alternateIdentifierType == 'HIGS_CIAM_ID'))[0].alternateIdentifierValue,
+		"ENT_MDMID":(vars.inputPayload.alternateIdentifiers filter($.alternateIdentifierType == 'PMDM_ID'))[0].alternateIdentifierValue,
+		"ENT_MedicalRecordNumber":vars.inputPayload.MR_NUM default "",
+		"ENT_nLinkPatientID":(vars.inputPayload.alternateIdentifiers filter($.alternateIdentifierType == 'NLINK_PATIENT_ID'))[0].alternateIdentifierValue,
+		"ENT_PostalAddress": (vars.inputPayload.addresses[0].addressLine1 default "") ++ (vars.inputPayload.addresses[0].addressLine2 default "") ++ (vars.inputPayload.addresses[0].addressLine3 default ""),
+		"ENT_City": vars.inputPayload.addresses[0].city default "",
+		"ENT_State": vars.inputPayload.addresses[0].state default "",
+		"ENT_ZipCode": vars.inputPayload.addresses[0].addressComponents.postalCode default "",
+		"ENT_Country": vars.inputPayload.addresses[0].county default "",
+		"ENT_Region": "Americas",
+		"ENT_GuardianName": (vars.inputPayload.relatedPersons[0].firstName) ++ " " ++ (vars.inputPayload.relatedPersons[0].middleName default "") ++ " " ++ (vars.inputPayload.relatedPersons[0].lastName default "")
+	},
+	 //"interactionDate": "2019-07-14T01:34:33Z",
+	"customPayload": {
+		"SourceSystem": vars.inputPayload.audit.createSource default "",
+		"CreatedOn": vars.inputPayload.audit.sourceCreateTimestamp as DateTime {format: "yyyy-MM-dd'T'HH:mm:ssX"} as String {format: "MM/dd/y'T'HH:mm:ss.SSSX"} default "",
+		"CreatedBy": vars.inputPayload.audit.sourceCreateUser default "",
+		"LastUpdatedOn": vars.inputPayload.audit.updateTimestamp as DateTime {format: "yyyy-MM-dd'T'HH:mm:ssX"} as String {format: "MM/dd/y'T'HH:mm:ss.SSSX"} default "",
+		"LastUpdatedBy ": vars.inputPayload.audit.sourceUpdateUser default ""
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<http:request method="POST" doc:name="Invoke OneTrust" doc:id="5e0eff29-7de1-4ec8-96c6-6014a4ebfd11" config-ref="HTTP_Request_configuration_one_trust" path="${onetrust.path}">
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"Authorization" : vars.accessToken,
+	"Content-Type": "application/json"
+}]]]></http:headers>
+		</http:request>
+		<json-logger:logger doc:name="End Of Consents Flow" doc:id="4f261a98-330e-466b-b69c-8e6d360b26b7" config-ref="JSON_Logger_Config" message="End Of Consents Flow" tracePoint="END"/>
+	</flow>
+</mule>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+<flow name="get:\consents\(personId):mdt-corporate-consent-sapi-config" doc:id="336034d1-9d4f-4abb-ab7c-ac50eacf56e1" >
+		<json-logger:logger doc:name="Start of Iframe flow" doc:id="d5c2884e-40ff-4183-bdf6-1b0f7087b79f" config-ref="JSON_Logger_Config" message="Start of Consents by person Id"/>
+		<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;attributes.uriParams.personId]" doc:name="Set Identifier" doc:id="a838b5f3-6941-446e-b801-c36c1c287e97" variableName="varIdentifier" />
+		<flow-ref doc:name="Call Token Flow" doc:id="23d0e79a-b036-4098-92c1-36e9fc11219c" name="getTokenDetails-flow"/>
+		<!-- <http:request method="GET" doc:name="Invoke Onetrust Api profiles" doc:id="fa20b7b2-a521-4dc1-ab99-24e83a5b780b" config-ref="HTTP_Request_configuration_token" path="${token.profilesPath}" target="profilesResponse">
+			<http:headers ><![CDATA[#[output application/java
+-&#45;&#45;
+{
+	"dataElementName": vars.varDataElementName,
+	"dataElementValue": vars.varDataElementValue,
+	"Authorization": vars.accessToken
+}]]]></http:headers>
+		</http:request> -->
+		<http:request method="GET" doc:name="Invoke Onetrust Api Linktokens" doc:id="9d6ac43e-cfde-4b83-becc-ca9ba5e9bbb9" config-ref="HTTP_Request_configuration_token" path="${token.linkPath}" target="linktokenResponse" responseTimeout="60000">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Identifier": vars.varIdentifier,
+	"Authorization": vars.accessToken
+}]]]></http:headers>
+		</http:request>
+		<ee:transform doc:name="Final Response To Collection Point" doc:id="a4ed5c95-e05c-41e2-8aaf-efae0dbf07c7" >
+			<ee:message >
+				<ee:set-payload resource="dwl/iframe/set-payload-finalResponse.dwl" />
+			</ee:message>
+		</ee:transform>
+		<json-logger:logger doc:name="End of Iframe flow" doc:id="0ac81579-0697-40cd-b057-997737679ec4" config-ref="JSON_Logger_Config" message="End of Consents by person Id" tracePoint="END"/>
+	</flow>
+</mule>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
+	<apikit:config outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" doc:name="mdt-api-template-config"
+		doc:id="37914fde-18e3-483b-bc08-8b3d974564d5" name="mdt-corporate-consent-sapi-config" api= "resource::50fa509f-680a-4dca-bcc9-77c06e70efc3:mdt-corporate-consent-sapi:1.0.15:raml:zip:mdt-corporate-consent-sapi.raml"
+		doc:description="API Router Configuration" />
+	<flow name="mdt-corporate-consent-sapi-main:privateFlow">
+		<http:listener path="/*" config-ref="HTTPS_Listener_Config_Private">
+			<http:response statusCode="#[vars.httpStatus default 200]">
+				<http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+			</http:response>
+			<http:error-response statusCode="#[vars.httpStatus default 500]">
+				<http:body><![CDATA[#[payload]]]></http:body>
+				<http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+			</http:error-response>
+		</http:listener>
+		<flow-ref doc:name="Set Header Variables" doc:id="6e389802-7556-4c0d-8e32-72f150dcd632"
+			name="globals-common:setHeaderVariablesSubFlow" />
+		<apikit:router config-ref="mdt-corporate-consent-sapi-config" />
+		<flow-ref doc:name="Call Elk Flow" doc:id="badf9751-ace7-4c26-8d9b-e715889b9e5a" name="elkTraceSub_Flow"/>
+		<error-handler ref="ApiKit_Error_Handler" />
+	</flow>
+</mule>
